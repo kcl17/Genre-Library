@@ -36,6 +36,30 @@
   --display: 'Playfair Display', Georgia, serif;
   --serif: 'Libre Baskerville', Georgia, serif;
   --sans: 'Outfit', system-ui, sans-serif;
+  --grain-opacity: 0.025;
+}
+
+/* ── LIGHT / PASTEL PINK THEME ── */
+[data-theme="light"] {
+  --bg-deep: #fdf6f4;
+  --bg: #fef9f7;
+  --bg-elevated: #fff5f2;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fff0ec;
+  --surface: #fce8e3;
+  --border: #f0d4cc;
+  --border-light: #e8bfb5;
+  --gold: #c47a6c;
+  --gold-bright: #b5584a;
+  --gold-dim: #d49a8e;
+  --gold-faint: rgba(196,122,108,0.06);
+  --crimson: #d4726a;
+  --crimson-soft: #e08a82;
+  --text: #2e1f1a;
+  --text-secondary: #5c403a;
+  --text-dim: #8a6e66;
+  --text-muted: #b89e96;
+  --grain-opacity: 0.012;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -64,7 +88,7 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.025;
+  opacity: var(--grain-opacity, 0.025);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
 }
@@ -142,6 +166,58 @@ body::after {
 .nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
 .nav-link.active { color: var(--gold); }
 .nav-link.active::after { transform: scaleX(1); }
+
+/* ── Theme Toggle ── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 1rem;
+  transition: all 0.3s;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+/* light mode nav bg */
+[data-theme="light"] .site-nav {
+  background: rgba(254,249,247,0.88);
+  border-bottom-color: rgba(240,212,204,0.5);
+}
+
+[data-theme="light"] .nav-links.open {
+  background: rgba(254,249,247,0.97);
+}
+
+[data-theme="light"] .genre-card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+[data-theme="light"] .genre-card:hover {
+  box-shadow: 0 16px 50px rgba(180,100,80,0.1), 0 0 0 1px rgba(196,122,108,0.1);
+}
+
+[data-theme="light"] ::selection {
+  background: var(--gold);
+  color: #fff;
+}
+
+[data-theme="light"] .card-badge.books { border-color: rgba(196,122,108,0.3); color: var(--gold); }
+[data-theme="light"] .card-badge.film { border-color: rgba(212,114,106,0.3); color: var(--crimson); }
+[data-theme="light"] .card-badge.anime { border-color: rgba(130,160,200,0.3); color: #5a82a8; }
+
+[data-theme="light"] .stat-item { background: #fff5f2; }
+[data-theme="light"] .cta-primary { background: var(--gold); color: #fff; }
+[data-theme="light"] .cta-primary:hover { box-shadow: 0 8px 30px rgba(196,122,108,0.25); }
 
 /* ── Mobile Nav ── */
 .nav-toggle {
@@ -836,6 +912,7 @@ body::after {
       <a href="films.html" class="nav-link" data-page="films">Films</a>
       <a href="anime.html" class="nav-link" data-page="anime">Anime</a>
     </div>
+    <button class="theme-toggle" aria-label="Toggle theme">☀</button>
   </nav>
 
   <div class="page-content">
@@ -1307,41 +1384,62 @@ function renderGrid(container, genres) {
   });
 }
 
-// ═══ Navigation Component ═══
+// ═══ Navigation + Theme Toggle ═══
+
 function initNav(activePage) {
   const nav = document.querySelector('.site-nav');
   if (!nav) return;
 
-  // Highlight active link
   nav.querySelectorAll('.nav-link').forEach(link => {
     if (link.dataset.page === activePage) link.classList.add('active');
   });
 
-  // Mobile toggle
   const toggle = nav.querySelector('.nav-toggle');
   const links = nav.querySelector('.nav-links');
   if (toggle && links) {
-    toggle.addEventListener('click', () => {
-      links.classList.toggle('open');
-    });
-    // close on link click
+    toggle.addEventListener('click', () => links.classList.toggle('open'));
     links.querySelectorAll('.nav-link').forEach(l => {
       l.addEventListener('click', () => links.classList.remove('open'));
     });
   }
 
-  // Shrink nav on scroll
-  let lastScroll = 0;
   window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y > 80) {
+    if (window.scrollY > 80) {
       nav.style.padding = '0.8rem clamp(1.5rem, 5vw, 4rem)';
     } else {
       nav.style.padding = '1.2rem clamp(1.5rem, 5vw, 4rem)';
     }
-    lastScroll = y;
+  });
+
+  // Theme Toggle
+  const themeBtn = nav.querySelector('.theme-toggle');
+  if (!themeBtn) return;
+
+  function getTheme() {
+    const saved = localStorage.getItem('genre-lib-theme');
+    if (saved) return saved;
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('genre-lib-theme', theme);
+    themeBtn.textContent = theme === 'light' ? '☾' : '☀';
+    themeBtn.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+  }
+
+  applyTheme(getTheme());
+  themeBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 }
+
+// Apply saved theme immediately to prevent flash
+(function() {
+  const saved = localStorage.getItem('genre-lib-theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+})();
 
 </script>
   <script>
