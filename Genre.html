@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genre — The Genre Library</title>
+  <style>
+/* ═══════════════════════════════════════════
+   THE GENRE LIBRARY — Global Stylesheet
+   Aesthetic: Literary Editorial / Art-House Cinema
+   ═══════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-deep: #080706;
+  --bg: #0d0c0a;
+  --bg-elevated: #141310;
+  --bg-card: #18170f;
+  --bg-card-hover: #1e1d14;
+  --surface: #222018;
+  --border: #2e2b22;
+  --border-light: #3a362a;
+  --gold: #c8a96e;
+  --gold-bright: #dfc08a;
+  --gold-dim: #8a7a50;
+  --gold-faint: rgba(200,169,110,0.06);
+  --crimson: #8b3a3a;
+  --crimson-soft: #a85454;
+  --text: #e6e0d4;
+  --text-secondary: #b5ad9e;
+  --text-dim: #7d7668;
+  --text-muted: #4e493e;
+  --display: 'Playfair Display', Georgia, serif;
+  --serif: 'Libre Baskerville', Georgia, serif;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-dim) var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── Film Grain Overlay ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* ═══ SELECTION ═══ */
+::selection {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+/* ═══ NAVIGATION ═══ */
+.site-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem clamp(1.5rem, 5vw, 4rem);
+  background: rgba(8,7,6,0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid rgba(46,43,34,0.5);
+  transition: all 0.4s;
+}
+
+.nav-logo {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: color 0.3s;
+}
+
+.nav-logo em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.nav-logo:hover { color: var(--gold-bright); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.nav-link {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 1.2rem; right: 1.2rem;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+
+.nav-link:hover { color: var(--text-secondary); }
+.nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
+.nav-link.active { color: var(--gold); }
+.nav-link.active::after { transform: scaleX(1); }
+
+/* ── Mobile Nav ── */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px; height: 20px;
+  position: relative;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background: var(--text-dim);
+  position: absolute;
+  left: 0;
+  transition: all 0.3s;
+}
+
+.nav-toggle span:nth-child(1) { top: 0; }
+.nav-toggle span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+.nav-toggle span:nth-child(3) { bottom: 0; }
+
+@media (max-width: 720px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,7,6,0.97);
+    backdrop-filter: blur(30px);
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .nav-links.open { opacity: 1; pointer-events: all; }
+  .nav-link { font-size: 1rem; padding: 1rem 2rem; }
+}
+
+/* ═══ PAGE HEADER (medium pages) ═══ */
+.page-header {
+  padding: clamp(8rem, 14vh, 12rem) clamp(1.5rem, 5vw, 6rem) clamp(3rem, 6vh, 5rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 60% at 30% 50%, rgba(200,169,110,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 30%, rgba(139,58,58,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.page-header .header-label {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.1s forwards;
+}
+
+.page-header h1 {
+  font-family: var(--display);
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.25s forwards;
+}
+
+.page-header h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.page-header .header-desc {
+  font-family: var(--serif);
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-weight: 400;
+  color: var(--text-dim);
+  max-width: 600px;
+  margin-top: 1.5rem;
+  line-height: 1.9;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+
+/* horizontal decorative line */
+.page-header .header-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin-top: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.55s forwards;
+}
+
+/* ═══ GENRE GRID ═══ */
+.grid-controls {
+  padding: 0 clamp(1.5rem, 5vw, 6rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.grid-count {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.grid-search {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  padding: 0.55rem 1.2rem;
+  width: 240px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.grid-search::placeholder { color: var(--text-muted); }
+.grid-search:focus { border-color: var(--gold-dim); }
+
+.genre-grid {
+  padding: 0 clamp(1.5rem, 5vw, 6rem) 6rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.2rem;
+}
+
+@media (max-width: 500px) {
+  .genre-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ GENRE CARD ═══ */
+.genre-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 2rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  transition: all 0.5s var(--ease-out-expo);
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.genre-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.genre-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--crimson-soft), transparent);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.genre-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 20%, rgba(200,169,110,0.03) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.genre-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-light);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(200,169,110,0.05);
+}
+
+.genre-card:hover::before { opacity: 1; }
+.genre-card:hover::after { opacity: 1; }
+
+.card-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.card-icon {
+  width: 44px; height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border: 1px solid var(--border);
+  background: var(--gold-faint);
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.card-badges {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.card-badge {
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.55rem;
+  line-height: 1;
+}
+
+.card-badge.books { border-color: rgba(200,169,110,0.2); color: var(--gold-dim); }
+.card-badge.film { border-color: rgba(139,58,58,0.3); color: var(--crimson-soft); }
+.card-badge.anime { border-color: rgba(100,140,180,0.25); color: #7ba0c0; }
+
+.card-title {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+}
+
+.card-def {
+  font-family: var(--serif);
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  line-height: 1.85;
+  flex-grow: 1;
+  position: relative;
+  z-index: 1;
+  /* Show 3 lines, truncate */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.card-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.card-tag {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.02);
+  padding: 0.18rem 0.5rem;
+}
+
+.card-arrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card-arrow::after {
+  content: '→';
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.genre-card:hover .card-arrow { color: var(--gold); }
+.genre-card:hover .card-arrow::after { transform: translateX(4px); }
+
+/* ═══ GENRE DETAIL PAGE ═══ */
+.genre-detail {
+  padding: clamp(8rem, 14vh, 12rem) clamp(1.5rem, 5vw, 8rem) 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.genre-detail .back-link {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+  transition: color 0.3s;
+}
+
+.genre-detail .back-link:hover { color: var(--gold); }
+
+.genre-detail .detail-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.genre-detail h1 {
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.genre-detail .detail-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.genre-detail .detail-def {
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin-bottom: 3rem;
+}
+
+.detail-section {
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.detail-section h2 {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1.5rem;
+}
+
+.review-placeholder {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 2.5rem 2rem;
+  border: 1px dashed var(--border);
+  text-align: center;
+  line-height: 1.8;
+}
+
+.related-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.related-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 0.4rem 1rem;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+.related-tag:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+/* ═══ HERO (index) ═══ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 45% at 50% 40%, rgba(200,169,110,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(139,58,58,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 30% at 80% 20%, rgba(200,169,110,0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* decorative giant letter */
+.hero::after {
+  content: 'G';
+  position: absolute;
+  font-family: var(--display);
+  font-size: clamp(20rem, 40vw, 50rem);
+  font-weight: 800;
+  color: rgba(200,169,110,0.015);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.hero-label {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 2rem;
+  opacity: 0; animation: fadeUp 0.9s 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(3.5rem, 10vw, 9rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  opacity: 0; animation: fadeUp 0.9s 0.35s forwards;
+}
+
+.hero h1 em { font-style: italic; color: var(--gold); }
+
+.hero-sub {
+  font-family: var(--serif);
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-weight: 400;
+  color: var(--text-dim);
+  max-width: 540px;
+  margin-top: 1.8rem;
+  line-height: 1.9;
+  opacity: 0; animation: fadeUp 0.9s 0.5s forwards;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0; animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.hero-cta a {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.85rem 2.2rem;
+  transition: all 0.4s var(--ease-out-expo);
+  position: relative;
+}
+
+.cta-primary {
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.cta-primary:hover {
+  background: var(--gold-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200,169,110,0.2);
+}
+
+.cta-secondary {
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.cta-secondary:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%; transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  opacity: 0; animation: fadeUp 0.9s 1s forwards;
+}
+
+.scroll-indicator span {
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.scroll-bar {
+  width: 1px; height: 36px;
+  background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  animation: scrollPulse 2.5s ease-in-out infinite;
+}
+
+/* ═══ HOME SECTIONS ═══ */
+.home-section {
+  padding: 5rem clamp(1.5rem, 5vw, 6rem);
+  border-top: 1px solid var(--border);
+}
+
+.home-section .section-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.home-section h2 {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 400;
+}
+
+.home-section h2 em { font-style: italic; color: var(--gold); }
+
+.section-link {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.3s;
+}
+
+.section-link:hover { color: var(--gold); }
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.2rem;
+}
+
+@media (max-width: 500px) {
+  .home-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ STATS BAR ═══ */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-item {
+  background: var(--bg-elevated);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--display);
+  font-size: 2.8rem;
+  font-weight: 400;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.6rem;
+}
+
+/* ═══ FOOTER ═══ */
+.site-footer {
+  padding: 4rem clamp(1.5rem, 5vw, 6rem);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-brand {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  color: var(--text-dim);
+}
+
+.footer-brand em { font-style: italic; color: var(--gold-dim); }
+
+.footer-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
+}
+
+/* ═══ NO RESULTS ═══ */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* ═══ PAGE TRANSITION ═══ */
+.page-content {
+  animation: pageIn 0.6s var(--ease-out-expo);
+}
+
+@keyframes pageIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+</style>
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="index.html" class="nav-logo">The Genre <em>Library</em></a>
+    <button class="nav-toggle"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link" data-page="home">Home</a>
+      <a href="books.html" class="nav-link" data-page="books">Books</a>
+      <a href="films.html" class="nav-link" data-page="films">Films</a>
+      <a href="anime.html" class="nav-link" data-page="anime">Anime</a>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <div class="genre-detail" id="detail">
+      <!-- Populated by JS -->
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-brand">The Genre <em>Library</em></div>
+      <div class="footer-note">Curating meaning across every medium.</div>
+    </footer>
+  </div>
+
+  <script>
+// ═══════════════════════════════════════════
+// THE GENRE LIBRARY — Genre Data
+// ═══════════════════════════════════════════
+
+const GENRES = [
+  // ─── LITERARY & PROSE ───
+  {
+    id: "literary-fiction",
+    title: "Literary Fiction",
+    icon: "✦",
+    medium: ["books", "film"],
+    tags: ["prose", "character", "language"],
+    definition: "Literature that treats language itself as the subject. Here, the sentence is not a vehicle for plot but an end unto itself — every clause a small act of perception. Literary fiction asks: what does it feel like to be conscious, to notice, to fail at understanding another person? It is prose that slows time.",
+    extended: "The distinction between literary and genre fiction is not one of quality but of orientation. Genre fiction optimises for the satisfaction of pattern — the mystery solved, the quest completed, the lovers united. Literary fiction optimises for the quality of attention. It trades the momentum of plot for the density of observation, asking the reader to inhabit a moment rather than race toward a resolution. At its best, it makes the familiar strange and the strange recognisable. At its worst, it mistakes obscurity for depth. The tradition runs from Flaubert's obsessive sentences through Woolf's interior cathedrals to the quiet devastations of Marilynne Robinson."
+  },
+  {
+    id: "science-fiction",
+    title: "Science Fiction",
+    icon: "◈",
+    medium: ["books", "film", "anime"],
+    tags: ["speculation", "technology", "futures"],
+    definition: "The genre of the thought experiment. Science fiction begins with a single alteration to reality — a technology, a law of physics, a social structure — and follows its consequences with rigorous honesty. It is philosophy performed in narrative: not 'what is?' but 'what if?' and more importantly, 'what then?'",
+    extended: "Science fiction is the only literary form that takes the future seriously as a subject. All other genres are set in the past or present, even when they pretend otherwise. SF alone asks: if this trend continues, if this invention arrives, if this boundary is crossed — what kind of world results, and what kind of people inhabit it? The genre's power lies not in prediction (it is almost always wrong about specifics) but in rehearsal. It lets civilisations practice their responses to change before the change arrives. From Wells to Asimov to Le Guin to Liu Cixin, the tradition's great works are those that change how their readers think about the present by showing them a future they hadn't considered."
+  },
+  {
+    id: "fantasy",
+    title: "Fantasy",
+    icon: "⟡",
+    medium: ["books", "film", "anime"],
+    tags: ["myth", "worldbuilding", "archetype"],
+    definition: "Fantasy is mythmaking for the modern psyche. By constructing worlds that operate on different metaphysical rules, it externalises the invisible forces of the human interior — courage, corruption, fate, free will. The dragon is never just a dragon. It is whatever we have not yet dared to face.",
+    extended: "Where science fiction extrapolates from the known, fantasy generates from the imagined. Its raw materials are the archetypes of collective myth: the journey into the underworld, the reluctant hero, the corrupting ring of power, the mentor who must be surpassed. Tolkien understood that these were not escapist tropes but psychological truths dressed in narrative clothing. The best fantasy worldbuilding is not an exercise in cartography but in metaphysics — it asks what kind of universe would make certain virtues necessary and certain temptations irresistible. The genre ranges from the epic (Tolkien, Jordan, Sanderson) to the intimate (Le Guin, McKillip) to the subversive (Miéville, Abercrombie), but its constant is the insistence that reality is larger than what materialism admits."
+  },
+  {
+    id: "horror",
+    title: "Horror",
+    icon: "◉",
+    medium: ["books", "film", "anime"],
+    tags: ["dread", "unknown", "boundary"],
+    definition: "Horror is the art of confronting what should not exist. It does not merely frighten — it reveals. Every great horror work locates the boundary where the familiar dissolves into the incomprehensible, where the self meets something it cannot absorb. It is the genre that takes the question 'what lies beyond understanding?' with absolute seriousness.",
+    extended: "Horror's philosophical ancestor is the concept of the sublime — that which exceeds the mind's capacity to contain it. But where Romantic sublimity was awe-struck by mountains and storms, horror is awe-struck by wrongness: the face that almost looks human, the house that has too many rooms, the silence that has texture. Its deepest works (Shirley Jackson, Thomas Ligotti, Junji Ito) are not about monsters but about the fragility of the categories we use to make the world safe — inside/outside, alive/dead, self/other. When these categories fail, horror begins. The genre endures because those categories are always failing, and we need stories that acknowledge it."
+  },
+  {
+    id: "mystery-detective",
+    title: "Mystery & Detective",
+    icon: "◇",
+    medium: ["books", "film", "anime"],
+    tags: ["logic", "revelation", "truth"],
+    definition: "The mystery is an epistemological drama. Something has happened; the truth is buried under layers of deception, coincidence, and human motive. The detective is a philosopher of the particular — reconstructing reality from fragments, proving that the world, however chaotic, is ultimately knowable. The reveal is not merely a surprise; it is an argument for order.",
+    extended: "The detective story is the Enlightenment's favourite genre. It enshrines the belief that reason, properly applied, can penetrate any darkness. From Poe's Dupin through Doyle's Holmes to Christie's Poirot, the tradition celebrates the mind that sees what others miss. But the genre's evolution has complicated this faith. Hardboiled mysteries (Chandler, Hammett) introduced a world where the solution brings no satisfaction because the corruption runs too deep. Contemporary mysteries (Tana French, Stieg Larsson) often reveal that the greatest mystery is not 'who did it?' but 'why does it matter?' The genre's deepest pleasure is not the surprise of the reveal but the architecture of its construction — the feeling that every detail was placed with intent."
+  },
+  {
+    id: "thriller-suspense",
+    title: "Thriller & Suspense",
+    icon: "⬡",
+    medium: ["books", "film"],
+    tags: ["tension", "stakes", "velocity"],
+    definition: "Where mystery asks 'what happened?', the thriller asks 'what will happen next — and can it be stopped?' It is the genre of compressed time and escalating stakes, a narrative engine built on the tension between knowledge and helplessness. The reader knows the danger before the character does, and that dramatic irony is the source of its unbearable momentum.",
+    extended: "Hitchcock called it the bomb under the table: the audience sees it, the characters don't, and the resulting tension is almost physical. The thriller is the most embodied of genres — it aims for the pulse, the held breath, the involuntary lean forward. But the best thrillers (le Carré, Highsmith, Denis Villeneuve's films) understand that mere danger is not suspense. True suspense requires moral complexity — a protagonist whose choices are constrained, whose values are tested, whose victory would cost something essential. The ticking clock is a structure, not a subject. The subject is always: what would you sacrifice to survive?"
+  },
+  {
+    id: "romance",
+    title: "Romance",
+    icon: "❋",
+    medium: ["books", "film", "anime"],
+    tags: ["intimacy", "desire", "connection"],
+    definition: "Romance is the phenomenology of desire — the slow or sudden rearrangement of a self around another person. It maps the architecture of intimacy: the first recognition, the obstacles that clarify longing, the surrender that is also a becoming. At its best, romance argues that love is not escape from the self but its most demanding expansion.",
+    extended: "Romance is the most dismissed and most read genre in literature, a paradox that reveals more about cultural prejudices than about the genre itself. Its emotional logic is precise: two people who need each other must overcome the barriers (internal and external) that prevent their union. The 'happily ever after' is not naïveté — it is a structural commitment, a promise that the narrative will honour the emotional investment of its reader. The genre's range is vast, from Austen's social precision to Heyer's historical wit to contemporary authors like Talia Hibbert and Casey McQuiston. The best romance writers understand that falling in love is the most psychologically complex event in ordinary human life, and they render that complexity with the seriousness it deserves."
+  },
+  {
+    id: "historical-fiction",
+    title: "Historical Fiction",
+    icon: "⊕",
+    medium: ["books", "film"],
+    tags: ["memory", "context", "anachronism"],
+    definition: "Historical fiction is the resurrection of dead time. It takes the skeleton of documented fact and clothes it in the flesh of lived experience — the textures, anxieties, and assumptions that no archive can preserve. It reveals that the past was not inevitable; it was as uncertain, as contested, and as human as our own present.",
+    extended: "The historian's task is accuracy; the historical novelist's task is truth. These are not the same thing. A historian can tell you that a battle was fought on a certain date with certain casualties. A historical novelist can make you understand what it felt like to stand in that field not knowing the outcome, not knowing you were living in what someone else would later call history. The genre's great challenge is anachronism — not the factual kind (wrong weapons, wrong clothing) but the psychological kind: projecting modern consciousness onto people who thought differently about God, death, gender, the self. Writers like Hilary Mantel, Umberto Eco, and Amitav Ghosh succeed by taking the strangeness of the past seriously."
+  },
+  {
+    id: "philosophy-thought",
+    title: "Philosophy & Thought",
+    icon: "∞",
+    medium: ["books"],
+    tags: ["reason", "existence", "inquiry"],
+    definition: "Not a genre of answers but of questions held open. Philosophical writing attempts to see the scaffolding beneath experience — the assumptions we never examine, the categories we treat as natural. It is the discipline of following a thought to its conclusion even when the conclusion is uncomfortable, and of beginning again when it collapses.",
+    extended: "Philosophy is the only genre that explicitly questions its own right to exist. Every generation of philosophers begins by asking whether philosophy is even possible, and this self-interrogation is not a weakness but its defining strength. From Plato's dialogues to Nietzsche's aphorisms to Wittgenstein's propositions, the form of philosophical writing has always been inseparable from its content. The essay (Montaigne, Emerson), the treatise (Kant, Rawls), the fragment (Pascal, Cioran), the meditation (Descartes, Marcus Aurelius) — each form encodes a different theory of how truth is best approached. Reading philosophy is not consuming information; it is practicing a mode of attention."
+  },
+  {
+    id: "biography-memoir",
+    title: "Biography & Memoir",
+    icon: "◎",
+    medium: ["books", "film"],
+    tags: ["life", "identity", "testimony"],
+    definition: "The biography asks: what can a single life tell us about the shape of a time, a discipline, a human possibility? The memoir goes further — it is the first-person archaeology of experience, the attempt to understand one's own life as a coherent, or beautifully incoherent, whole. Both forms argue that the particular is the shortest path to the universal.",
+    extended: "Biography is the art of selection — from the infinite details of a life, which ones reveal character? The biographer must resist two temptations: hagiography (making the subject a saint) and reductionism (explaining them away). The best biographies (Isaacson's on Jobs and Musk, Caro's on Lyndon Johnson, Hermione Lee's on Virginia Woolf) achieve a third thing: they make you understand how it felt to be that person, to face their particular set of impossible choices. Memoir, meanwhile, is biography without the safety of distance. The memoirist must be both subject and investigator, must interrogate their own memory knowing that memory is never neutral. It is always already a narrative, always already shaped by what the self needs to believe about itself."
+  },
+  {
+    id: "dystopia",
+    title: "Dystopia",
+    icon: "⬢",
+    medium: ["books", "film", "anime"],
+    tags: ["warning", "control", "society"],
+    definition: "Dystopia is prophecy in the mode of warning. It takes a tendency already visible in the present — surveillance, conformity, ecological collapse, ideological purity — and accelerates it to its logical extreme. The dystopian world is never truly alien; it is our own world with its masks removed. Its horror lies not in implausibility but in recognition.",
+    extended: "The dystopian tradition splits into two branches. The totalitarian branch (Orwell, Huxley, Zamyatin) warns against the concentration of power — the state that sees everything, the pleasure that numbs everything, the uniformity that destroys everything. The ecological branch (Atwood, Octavia Butler, Paolo Bacigalupi) warns against the consequences of consumption — worlds where the bill for industrial civilisation has finally come due. Both branches share the conviction that the present contains the seeds of catastrophe, and that fiction can make those seeds visible before they bloom. The genre's political power is undeniable: '1984' and 'Brave New World' have shaped how entire generations think about freedom and control."
+  },
+  {
+    id: "magical-realism",
+    title: "Magical Realism",
+    icon: "❂",
+    medium: ["books", "film", "anime"],
+    tags: ["liminality", "wonder", "reality"],
+    definition: "Magical realism does not introduce magic as an escape from reality but as a deeper fidelity to it. A dead grandmother returns because grief does not obey linear time. Rain falls for four years because political despair has that quality. The 'magical' element is simply the visible surface of an emotional or historical truth too large for realism to contain.",
+    extended: "Born in Latin American literature (García Márquez, Borges, Allende) but practiced worldwide (Rushdie, Murakami, Okri), magical realism is not fantasy misidentified. Fantasy builds complete alternative worlds; magical realism inserts the impossible into the recognisably real, and treats it with the same matter-of-fact tone as a bus schedule. This tonal flatness is the genre's signature and its philosophy: if the emotional truth of an experience is supernatural in intensity, then a supernatural event is the most realistic way to represent it. The genre is particularly suited to post-colonial literatures, where history itself — its violence, its erasures, its survivals — exceeds what conventional realism can hold."
+  },
+  {
+    id: "satire-dark-comedy",
+    title: "Satire & Dark Comedy",
+    icon: "⟐",
+    medium: ["books", "film", "anime"],
+    tags: ["irony", "critique", "absurdity"],
+    definition: "Satire is moral philosophy performed through exaggeration. It holds the mirror at an angle that distorts just enough to reveal what polite society has agreed not to see. The laughter it produces is never comfortable — it is the involuntary recognition of a truth we had been successfully ignoring. Dark comedy adds: even the recognition itself is absurd.",
+    extended: "Swift proposed eating babies. Voltaire sent a naïf through a world of horrors with unshakeable optimism. Kubrick turned nuclear annihilation into farce. The satirist's method is always the same: take a social reality and amplify it until its absurdity becomes undeniable. The risk is that the audience mistakes the exaggeration for the point, when the point is always the reality the exaggeration reveals. Dark comedy extends this into existential territory — it finds humour not just in social failure but in the fundamental conditions of existence: mortality, meaninglessness, the gap between intention and outcome. It is the laughter of people who have looked at the void and decided that silence is worse than a joke."
+  },
+  {
+    id: "tragedy",
+    title: "Tragedy",
+    icon: "◆",
+    medium: ["books", "film", "anime"],
+    tags: ["fate", "flaw", "catharsis"],
+    definition: "Tragedy is the genre that respects suffering enough to find meaning in it. A great character is undone not by accident but by the same quality that makes them great — ambition, loyalty, love pursued without limit. Aristotle called its effect catharsis: the purification that comes from witnessing the full weight of human consequence, and surviving the witnessing.",
+    extended: "From Sophocles to Shakespeare to Arthur Miller, tragedy has maintained a remarkably stable structure: a person of significance makes a choice that, given who they are, they could not have avoided making — and that choice destroys them. The hamartia (fatal flaw) is never a simple error; it is the dark side of a virtue. Macbeth's ambition, Othello's trust, Oedipus's relentless pursuit of truth — these are the qualities that make them admirable, and the qualities that annihilate them. Tragedy's emotional power lies in this double vision: we see the character as both free and fated, both responsible and innocent. It is the most morally serious of genres because it refuses the consolation of blame."
+  },
+  {
+    id: "coming-of-age",
+    title: "Coming-of-Age",
+    icon: "◐",
+    medium: ["books", "film", "anime"],
+    tags: ["growth", "identity", "threshold"],
+    definition: "The coming-of-age narrative maps the death of one self and the tentative birth of another. It is the genre of thresholds — between innocence and experience, dependence and autonomy, the world as given and the world as chosen. Its power lies in the universality of that passage: everyone has stood at the border of who they were and who they might become.",
+    extended: "The bildungsroman — the novel of formation — is one of literature's oldest and most resilient forms. From Goethe's Wilhelm Meister to Salinger's Catcher in the Rye to Chbosky's Perks of Being a Wallflower, it tracks the moment when a young person's model of the world proves insufficient and must be rebuilt. The genre's emotional register is unique: it combines the intensity of first experience with the retrospective awareness that this intensity will never quite return. Coming-of-age stories in anime (Your Name, A Silent Voice) and film (Stand By Me, Boyhood) exploit visual media's ability to literalise the passage of time, making the viewer complicit in the character's transformation."
+  },
+  {
+    id: "epic-saga",
+    title: "Epic & Saga",
+    icon: "⟠",
+    medium: ["books", "film", "anime"],
+    tags: ["scale", "legacy", "civilisation"],
+    definition: "The epic is narrative at civilisational scale. Its subject is not a person but a people, a founding, a war that reshapes the world. Individual characters exist as embodiments of forces larger than themselves — duty, hubris, destiny. The saga extends this across generations, arguing that meaning is not found in a single life but in the patterns that repeat across many.",
+    extended: "The epic tradition begins with Homer and the Mahabharata — stories so foundational that entire cultures defined themselves by them. Its modern descendants (Tolkien's Lord of the Rings, Herbert's Dune, Martin's A Song of Ice and Fire) retain the essential qualities: vast scope, mythic resonance, and the conviction that individual heroism matters precisely because the stakes are civilisational. The saga form (the Icelandic sagas, Dumas's family chronicles, anime like Legend of the Galactic Heroes) adds a temporal dimension, tracing how the decisions of one generation become the constraints of the next. Both forms remind us that we are not the first to face the problems we face, and that how we respond will echo."
+  },
+  {
+    id: "psychological-fiction",
+    title: "Psychological Fiction",
+    icon: "◑",
+    medium: ["books", "film", "anime"],
+    tags: ["interiority", "mind", "perception"],
+    definition: "Psychological fiction turns the camera inward. The plot is the movement of consciousness itself — a mind circling an obsession, a memory reshaping under pressure, a perception slowly revealed as delusion. It insists that the most dramatic events in human life are invisible: the moment a belief collapses, the instant trust becomes suspicion, the quiet decision to lie.",
+    extended: "Dostoevsky is the genre's founding figure — Crime and Punishment is essentially a 500-page anxiety attack rendered in prose. The tradition continued through Henry James's ambiguities, Nabokov's unreliable narrators, and into contemporary works like Gone Girl and the films of David Fincher and Darren Aronofsky. In anime, works like Monster and Perfect Blue achieve psychological depth through the medium's unique ability to visualise subjective states — distorted perspectives, fractured timelines, the literal intrusion of delusion into the visual field. The genre's core insight is that the 'inner life' is not a metaphor: consciousness has a landscape, and that landscape can be as treacherous as any external wilderness."
+  },
+  {
+    id: "adventure",
+    title: "Adventure",
+    icon: "⟢",
+    medium: ["books", "film", "anime"],
+    tags: ["journey", "courage", "discovery"],
+    definition: "Adventure is the genre of forward motion. A character leaves the known world and enters the unknown — not for philosophical reasons but because something compels them: treasure, rescue, survival, pure restlessness. The journey transforms the traveller, but the genre's deeper argument is that movement itself is a form of meaning, that courage is clarified only by risk.",
+    extended: "From Odysseus's voyage home to Indiana Jones's archaeological quests to Luffy's pursuit of the Grand Line, adventure is the genre that most directly embodies the narrative impulse: something must happen next. Its pleasures are kinetic — new landscapes, narrow escapes, unexpected allies and enemies. But the best adventure stories understand that the external journey mirrors an internal one. Treasure Island is about a boy learning to judge character. The Count of Monte Cristo is about the limits of revenge. One Piece is about the meaning of freedom. The map is always also a metaphor."
+  },
+  {
+    id: "noir",
+    title: "Noir",
+    icon: "▣",
+    medium: ["books", "film", "anime"],
+    tags: ["shadow", "morality", "corruption"],
+    definition: "Noir is the genre that has abandoned the possibility of innocence. Its world is one where institutions are corrupt, motives are mixed, and even the protagonist is compromised. The visual signature — shadow bisecting light — is a moral statement: in noir, clarity is always partial. What makes it endure is its honesty about the human condition at its most unvarnished.",
+    extended: "Noir emerged from the collision of two cultural forces: American hard-boiled fiction (Hammett, Chandler, Cain) and German Expressionist cinema. The result was a genre defined as much by mood as by plot — the perpetual night, the rain-slicked streets, the femme fatale who is as trapped as the hero she deceives. Film noir (Double Indemnity, Chinatown, Blade Runner) visualised moral ambiguity through lighting. Neo-noir (the Coen Brothers, Denis Villeneuve, anime like Cowboy Bebop and Psycho-Pass) updated the setting but kept the essence: a world where doing the right thing and surviving are often incompatible."
+  },
+  {
+    id: "cyberpunk",
+    title: "Cyberpunk",
+    icon: "⌬",
+    medium: ["books", "film", "anime"],
+    tags: ["tech-noir", "rebellion", "posthuman"],
+    definition: "Cyberpunk is science fiction stripped of optimism. It imagines futures where technology has advanced but justice has not — where neon-lit megacities mask deepening inequality, where the body is hackable and identity is code. Its protagonists are outsiders navigating systems designed to exploit them. Born in the 1980s, it has become less a prediction than a description.",
+    extended: "William Gibson's Neuromancer (1984) defined the genre: a future of megacorporations, cyberspace, and street-level survival. But cyberpunk's real innovation was tonal — it was the first SF subgenre to treat technology not as salvation or apocalypse but as infrastructure, as mundane as plumbing and as political as zoning law. Anime became the genre's most visually expressive medium: Ghost in the Shell asked what selfhood means when consciousness is software; Akira fused cyberpunk with body horror; Serial Experiments Lain anticipated the psychological effects of digital immersion decades before social media. The genre's enduring question — who benefits from technological progress? — has only become more urgent."
+  },
+  {
+    id: "mecha",
+    title: "Mecha",
+    icon: "⎔",
+    medium: ["anime", "film"],
+    tags: ["machine", "pilot", "war"],
+    definition: "Mecha externalises the interior drama of war. The giant machine is simultaneously weapon and metaphor — an amplification of the pilot's will, fear, and moral weight. The best mecha works use the scale of mechanical combat to ask human-scale questions: what does it cost to fight? Who deserves the power to destroy? The cockpit is always a confessional.",
+    extended: "The mecha genre bifurcates into 'super robot' (Mazinger Z, Gurren Lagann) — where the machine is an expression of heroic will — and 'real robot' (Gundam, Evangelion, Code Geass) — where the machine is a tool of war embedded in political systems. The latter tradition produced some of anime's most profound works. Neon Genesis Evangelion used the mecha frame to explore depression, parental abandonment, and the human fear of intimacy. Mobile Suit Gundam examined the ethics of warfare and the cycle of violence. The genre's unique power is scale: by placing a vulnerable human inside a giant weapon, it makes the gap between power and responsibility physically visible."
+  },
+  {
+    id: "slice-of-life",
+    title: "Slice of Life",
+    icon: "○",
+    medium: ["anime", "film", "books"],
+    tags: ["ordinary", "presence", "quiet"],
+    definition: "Slice of life is the radical argument that the unremarkable is sufficient. No quest, no villain, no dramatic revelation — only the texture of daily existence rendered with enough attention to reveal its concealed beauty. A shared meal, a walk home in rain, the awkwardness of a first conversation. It practices the discipline of noticing what plot-driven narrative teaches us to overlook.",
+    extended: "In anime, slice of life has become one of the medium's most distinctive contributions to global storytelling. Series like Mushishi, Aria, Barakamon, and March Comes in Like a Lion demonstrate that narrative satisfaction does not require narrative tension. The genre draws from the Japanese aesthetic concept of mono no aware — the bittersweet awareness of impermanence — and the Zen attention to ordinary action. In film, the tradition includes Ozu's domestic dramas, Linklater's Before trilogy, and Kore-eda's family portraits. In literature, the essay tradition (Montaigne, Didion, Zadie Smith) often operates in this mode. The genre's challenge is its standard: without plot to sustain interest, every sentence, every frame, every scene must earn its existence through the quality of its attention."
+  },
+  {
+    id: "shonen",
+    title: "Shōnen",
+    icon: "☆",
+    medium: ["anime"],
+    tags: ["growth", "will", "bonds"],
+    definition: "Shōnen is the mythology of effort. Its heroes begin weak and grow strong — not through destiny but through relentless, painful, joyful striving. The bonds forged in battle are its emotional core: rivalry that sharpens, friendship that saves, mentorship that transforms. It speaks to the adolescent conviction that willpower can reshape reality, and treats that conviction with genuine respect.",
+    extended: "The shōnen formula — training arcs, power systems, escalating adversaries, the nakama (found family) — has proven remarkably durable because it maps onto universal psychological needs: the desire to grow, to be tested, to belong. Dragon Ball established the template; Naruto deepened its emotional register; One Piece expanded its scope to civilisational commentary; Jujutsu Kaisen and My Hero Academia refine it with increasing narrative sophistication. The genre's detractors call it repetitive. Its defenders understand that repetition with variation is the structure of myth itself — the hero's journey is always the same journey, and always different."
+  },
+  {
+    id: "shojo",
+    title: "Shōjo",
+    icon: "✿",
+    medium: ["anime"],
+    tags: ["emotion", "relationship", "inner world"],
+    definition: "Shōjo is the genre of emotional interiority given visual form. Flowers bloom in moments of realisation; backgrounds dissolve into abstraction when feeling overwhelms perception. Its subject is the inner landscape of its characters — the delicate, devastating complexity of social bonds, self-image, first love, and the slow construction of identity. Feeling is not decoration here; it is architecture.",
+    extended: "Shōjo manga and anime developed a unique visual vocabulary: screen tones, flower motifs, elongated figures, eyes that contain galaxies. These are not stylistic affectations but narrative tools — they externalise internal states with a directness that prose cannot match. Revolutionary Girl Utena used shōjo conventions to deconstruct fairy tales and gender roles. Fruits Basket explored generational trauma through the lens of the Chinese zodiac. Nana depicted adult friendship and heartbreak with unflinching realism. The genre's greatest innovation is its insistence that emotional experience is not secondary to action but is itself the primary drama of human existence."
+  },
+  {
+    id: "isekai",
+    title: "Isekai",
+    icon: "⊘",
+    medium: ["anime", "books"],
+    tags: ["displacement", "reinvention", "world"],
+    definition: "Isekai — 'another world' — is the fantasy of radical reinvention. An ordinary person is transported to a realm where the rules are different and their previous limitations no longer apply. Beneath its escapist surface lies a serious question: who would you become if everything you know about yourself were suddenly irrelevant? It is the genre of identity unmoored from context.",
+    extended: "The isekai boom in anime and light novels has produced an enormous range of quality, from wish-fulfilment power fantasies to genuinely thoughtful explorations of displacement and adaptation. Re:Zero subverted the genre by making its protagonist suffer for every advantage. Mushoku Tensei used reincarnation to examine whether a person can genuinely change. The genre's roots are older than anime — Alice in Wonderland, The Chronicles of Narnia, A Connecticut Yankee in King Arthur's Court are all isekai. The enduring appeal is the same: the fantasy of a clean slate, tested against the reality that you carry yourself wherever you go."
+  },
+  {
+    id: "western",
+    title: "Western",
+    icon: "✧",
+    medium: ["books", "film"],
+    tags: ["frontier", "law", "solitude"],
+    definition: "The Western takes place at the edge of civilisation — the literal and metaphorical frontier where law has not yet solidified, where individuals must negotiate justice without institutions. Its landscapes are moral as much as geographical: the vast emptiness that isolates and clarifies, the town that represents fragile order, the wilderness that represents freedom and its costs.",
+    extended: "The Western is America's foundational mythology, and like all mythologies, it contains both truth and lie. The truth: there is something irreducibly compelling about the individual confronting an unjust world with nothing but competence and moral conviction. The lie: the frontier was not empty, and 'civilisation' was not always the hero. The genre's evolution tracks this growing awareness — from John Ford's heroic simplicity to Eastwood's moral ambiguity to Cormac McCarthy's apocalyptic darkness. The revisionist Western (Unforgiven, Blood Meridian, The Power of the Dog) does not abandon the genre's power but complicates it, asking who was erased to make the myth possible."
+  },
+  {
+    id: "gothic",
+    title: "Gothic",
+    icon: "⛧",
+    medium: ["books", "film", "anime"],
+    tags: ["decay", "secrets", "sublime"],
+    definition: "The Gothic is the literature of what is buried but will not stay buried. Ancestral sins, repressed desires, architectural decay that mirrors psychological disintegration — it locates terror not in the alien but in the familiar grown strange. The crumbling mansion is always a mind. The ghost is always a memory. The genre insists that the past is never truly past.",
+    extended: "From Horace Walpole's Castle of Otranto (1764) to the Brontës to Shirley Jackson to modern gothic (Mexican Gothic, Crimson Peak), the genre has maintained its essential equation: architecture equals psychology. The Gothic house — with its locked rooms, hidden passages, and oppressive atmosphere — is the physical manifestation of secrets that a family or a society has refused to confront. In anime, works like Vampire Hunter D, The Promised Neverland, and Shadows House translate Gothic conventions into visual languages that emphasise the genre's core uncanniness: the beautiful that is also terrible, the home that is also a prison."
+  },
+  {
+    id: "documentary-nonfiction",
+    title: "Documentary & Narrative Non-Fiction",
+    icon: "◫",
+    medium: ["books", "film"],
+    tags: ["truth", "evidence", "witness"],
+    definition: "Documentary is the art of structured attention to reality. It selects, frames, and sequences actual events to reveal patterns invisible to the casual observer. The best documentary work acknowledges its own subjectivity — every cut is an argument, every angle a perspective — while maintaining fidelity to the complexity of what actually happened. It is curated truth, not raw truth.",
+    extended: "The documentary tradition ranges from observational cinema (Wiseman, the Maysles brothers) to essayistic film (Chris Marker, Werner Herzog) to investigative journalism on screen (Errol Morris, Laura Poitras). In book form, narrative non-fiction (Truman Capote's In Cold Blood, Jon Krakauer's Into the Wild, Katherine Boo's Behind the Beautiful Forevers) applies novelistic technique to factual material, creating works that read like fiction but carry the weight of actuality. The genre's ongoing ethical question — what do we owe to the subjects of our attention? — distinguishes it from all other forms."
+  },
+  {
+    id: "absurdist",
+    title: "Absurdist",
+    icon: "◌",
+    medium: ["books", "film", "anime"],
+    tags: ["meaninglessness", "freedom", "revolt"],
+    definition: "Absurdism begins where meaning ends — and refuses to despair. Following Camus, it acknowledges that the universe offers no inherent purpose, then asks: what does a human life look like when it stops demanding one? The absurdist work replaces despair with defiance, logic with play, and arrives at a strange, hard-won joy. It is the laughter that follows the last unanswered question.",
+    extended: "The Theatre of the Absurd (Beckett, Ionesco, Pinter) stripped drama down to its existential bones: characters wait for someone who never comes, speak in non sequiturs, perform rituals without meaning. In fiction, Kafka preceded the movement by decades — his bureaucratic nightmares are absurdism before it had a name. In film, the Coen Brothers, Yorgos Lanthimos, and Charlie Kaufman create worlds where logic operates just differently enough to expose the arbitrariness of the logic we accept as normal. The genre's gift is perspective: by showing us a world that makes no sense, it reminds us that our world makes less sense than we pretend."
+  },
+  {
+    id: "existentialist",
+    title: "Existentialist",
+    icon: "⊡",
+    medium: ["books", "film"],
+    tags: ["freedom", "anguish", "authenticity"],
+    definition: "Existentialist works dramatise the vertigo of radical freedom. Existence precedes essence: you are not born with a purpose but condemned to create one. The genre explores the anguish of choice without guideposts, the temptation of bad faith, and the rare, terrifying moments of authentic action. Its characters are never comfortable — and that discomfort is the point.",
+    extended: "Sartre's Nausea, Camus's The Stranger, de Beauvoir's The Mandarins — existentialist fiction puts philosophical questions in the mouths and bodies of characters who must live them, not merely think them. The genre insists that philosophy without lived experience is empty, and that experience without philosophical reflection is blind. In cinema, Bergman, Tarkovsky, and Terrence Malick create existentialist works that operate through image rather than argument — the long take that forces the viewer into an encounter with time, the landscape that dwarfs human intention, the silence that is not empty but full."
+  },
+  {
+    id: "surrealism",
+    title: "Surrealism",
+    icon: "◍",
+    medium: ["books", "film", "anime"],
+    tags: ["dream", "unconscious", "juxtaposition"],
+    definition: "Surrealism attempts to bypass the rational mind and access the logic of dreams. It juxtaposes images and events that should not coexist, creating a disorientation that paradoxically feels more real than realism — because the unconscious mind has its own grammar, and surrealism is its literature. The melting clock is truer to the experience of time than any clock face.",
+    extended: "André Breton's Surrealist Manifesto (1924) declared war on rationalism, proposing automatic writing and dream transcription as methods for accessing deeper truths. In practice, the best surrealist works (Buñuel's films, Murakami's novels, Satoshi Kon's anime) achieve something subtler: they create a space where the boundary between subjective and objective reality dissolves, and the viewer must navigate without the usual landmarks of logic. Paprika, Kon's masterpiece, makes this dissolution literal — dreams leak into waking life until the distinction becomes meaningless. The genre's lasting insight: consciousness is not a clear window onto reality but a kaleidoscope, and surrealism is the honest report."
+  },
+  {
+    id: "war",
+    title: "War",
+    icon: "⬣",
+    medium: ["books", "film", "anime"],
+    tags: ["violence", "sacrifice", "humanity"],
+    definition: "The war genre holds two irreconcilable truths simultaneously: that war is the most destructive expression of human failure, and that it produces the most extreme expressions of human courage, loyalty, and sacrifice. It refuses to resolve this contradiction. The best war works do not glorify or condemn — they witness, and leave the moral weight with the audience.",
+    extended: "From Homer's Iliad to Tolstoy's War and Peace to Tim O'Brien's The Things They Carried, the war genre has evolved from celebration to interrogation. Modern war literature and film (All Quiet on the Western Front, Apocalypse Now, Grave of the Fireflies) emphasise the experience of the individual soldier — the boredom, the terror, the moral injury that no victory can heal. The genre's power comes from its proximity to death: in war stories, the stakes are not metaphorical. Every choice has irreversible consequences, and the luxury of ambiguity that peacetime affords is replaced by the terrible clarity of survival."
+  },
+  {
+    id: "seinen",
+    title: "Seinen",
+    icon: "◈",
+    medium: ["anime"],
+    tags: ["maturity", "complexity", "realism"],
+    definition: "Seinen is anime and manga addressed to the adult mind. Where shōnen promises that willpower conquers all, seinen introduces ambiguity, moral compromise, and consequences that cannot be undone. Its protagonists are not chosen ones but ordinary people navigating systems that resist individual heroism. It is the genre that respects its audience enough to offer no easy answers.",
+    extended: "The seinen demographic encompasses enormous tonal range — from the quiet melancholy of Mushishi to the political intrigue of Vinland Saga to the body horror of Berserk. What unites them is a refusal to simplify. Vagabond examines the samurai ideal and finds it both beautiful and monstrous. Monster tracks a doctor's obsession across a continent and refuses to let him (or the reader) off the hook. Legend of the Galactic Heroes stages an epic space war to argue that democracy and autocracy both fail, and that history has no heroes, only participants. Seinen is where anime most directly engages with the complexity of adult life."
+  },
+  {
+    id: "josei",
+    title: "Josei",
+    icon: "❖",
+    medium: ["anime"],
+    tags: ["womanhood", "realism", "complexity"],
+    definition: "Josei is the mature counterpart to shōjo — narratives of womanhood that trade idealisation for honesty. Its subjects are work, love, aging, ambition, compromise, and the quiet reinventions of adult life. Romance exists here, but stripped of fantasy: relationships are work, desire is complicated, and happiness is not a destination but a practice. It tells the truth about grown women's lives.",
+    extended: "Josei manga and anime (Nana, Honey and Clover, Paradise Kiss, Chihayafuru) occupy a space that Western media often neglects: the ordinary struggles of young adult women navigating careers, relationships, and self-definition without the convenient structure of a quest or a villain. The genre's emotional palette is richer than shōjo's — it includes regret, compromise, the particular melancholy of outgrowing a dream, and the quiet satisfaction of choosing reality over fantasy. In a media landscape that often reduces women's stories to romance or empowerment narratives, josei insists on the full, unglamorous spectrum of adult experience."
+  },
+  {
+    id: "sports",
+    title: "Sports",
+    icon: "◓",
+    medium: ["anime", "film", "books"],
+    tags: ["discipline", "competition", "mastery"],
+    definition: "The sports genre transforms physical competition into a theatre of character. Every match is an argument made with the body — about preparation against talent, individual will against collective strategy, the limits you accept versus the ones you shatter. Its emotional power comes from the visible, undeniable nature of athletic truth: the clock runs out, the score is final, the body either endures or it does not.",
+    extended: "Anime has produced the most emotionally sophisticated sports narratives in any medium. Haikyuu!! turns volleyball into a study of teamwork and the fear of inadequacy. Slam Dunk made basketball a vehicle for personal redemption. Ping Pong: The Animation used table tennis to explore five different philosophies of competition and life. Blue Lock inverts the genre by making cooperation the enemy. What these works share is the understanding that sports are compelling not because of the game itself but because of what the game reveals about the people playing it. The court, the field, the ring — these are all stages where character becomes visible through action."
+  },
+  {
+    id: "cosmic-horror",
+    title: "Cosmic Horror",
+    icon: "⍟",
+    medium: ["books", "film", "anime"],
+    tags: ["insignificance", "incomprehensible", "awe"],
+    definition: "Cosmic horror is the genre that takes humanity's insignificance literally. Its terrors are not malicious but indifferent — vast intelligences and geometries that do not register human existence at all. The true horror is not the monster but the revelation it carries: that the universe was never built to a human scale, and that comprehension itself has limits we cannot safely cross.",
+    extended: "Lovecraft founded the genre, and despite his personal bigotries, his philosophical innovation endures: the idea that knowledge, pursued far enough, does not liberate but destroys. His cosmic entities are not evil in any human sense — they are simply too large, too old, too alien for human categories to apply. Modern cosmic horror (Jeff VanderMeer's Annihilation, the film Arrival, the manga Uzumaki) has refined Lovecraft's vision by replacing his xenophobia with genuine wonder, asking not 'what horrors lurk beyond human understanding?' but 'what happens to the self when understanding fails?' The answer, the genre suggests, is transformation — whether that transformation is beautiful or terrible depends on the work."
+  },
+  {
+    id: "wuxia-xianxia",
+    title: "Wuxia & Xianxia",
+    icon: "⊛",
+    medium: ["books", "anime", "film"],
+    tags: ["cultivation", "honour", "transcendence"],
+    definition: "Wuxia — 'martial heroes' — is the Chinese tradition of chivalric adventure, where martial arts mastery is inseparable from moral cultivation. Xianxia extends this into the cosmological: heroes cultivate not just skill but spiritual power, ascending through levels of reality toward immortality. Both genres argue that the body's discipline and the soul's refinement are the same practice, pursued across lifetimes.",
+    extended: "Wuxia (Jin Yong, Gu Long) is rooted in the jianghu — the 'rivers and lakes' world of wandering swordsmen, secret societies, and codes of honour that exist outside official law. Its appeal is the same as the Western's: individuals dispensing justice in a lawless space, but with a philosophical depth derived from Confucian, Taoist, and Buddhist traditions. Xianxia (Stellar Transformations, Renegade Immortal, Reverend Insanity) adds the cultivation system — a metaphysical progression where martial training leads to transcendence of the human condition. In film, Crouching Tiger Hidden Dragon and Hero brought wuxia to global audiences. The genres remind us that in Chinese literary tradition, the warrior and the sage are not opposites but stages of the same path."
+  },
+  {
+    id: "experimental-avant-garde",
+    title: "Experimental & Avant-Garde",
+    icon: "⬔",
+    medium: ["books", "film", "anime"],
+    tags: ["form", "boundary", "rupture"],
+    definition: "The avant-garde is genre in the act of destroying genre. It interrogates the conventions of its medium — narrative linearity, visual coherence, linguistic transparency — not for the sake of difficulty but to reveal how those conventions shape (and limit) what can be thought and felt. Every experimental work is an argument that the container determines the content, and that new containers are possible.",
+    extended: "Joyce's Ulysses, Godard's Breathless, Kon's Paprika — the avant-garde's history is a series of ruptures that eventually become new conventions, which the next generation of experimentalists then ruptures in turn. The cycle is productive: each experiment reveals an assumption that had been invisible. Stream of consciousness showed that thought is not orderly. Jump cuts showed that narrative continuity is a construction. Non-linear timelines showed that memory does not respect chronology. In anime, Serial Experiments Lain, FLCL, and The Tatami Galaxy each broke different conventions to access different truths. The avant-garde's permanent question: what would this story look like if we stopped pretending that the way we've always told stories is the only way?"
+  },
+  {
+    id: "post-apocalyptic",
+    title: "Post-Apocalyptic",
+    icon: "⊗",
+    medium: ["books", "film", "anime"],
+    tags: ["survival", "rebuild", "stripped"],
+    definition: "The post-apocalyptic genre strips civilisation to its foundation and asks: what remains when everything built upon it is gone? It is not ultimately about destruction but about the first principles of human society — what we rebuild first, what we fight over, and what we discover we never needed. The wasteland is a philosophical laboratory.",
+    extended: "Cormac McCarthy's The Road distilled the genre to its essence: a parent protecting a child in a world that has lost every reason to continue except love. Studio Ghibli's Nausicaä imagined post-apocalyptic ecology as spiritual practice. The genre's range spans from survivalist realism (Station Eleven, The Last of Us) to philosophical fable (A Canticle for Leibowitz) to social commentary (Mad Max: Fury Road's feminist wasteland). What unites them is the question that civilisation's comfort usually makes invisible: what do humans actually need, and what are they willing to do to get it?"
+  },
+  {
+    id: "true-crime",
+    title: "True Crime",
+    icon: "◧",
+    medium: ["books", "film"],
+    tags: ["justice", "obsession", "system"],
+    definition: "True crime examines the point where individual pathology meets systemic failure. It is drawn to the cases that reveal something about the society in which they occurred — the assumptions that allowed a crime to happen, the institutions that failed to prevent or solve it, the public fascination that followed. It asks not just 'who did this?' but 'what kind of world produces this?'",
+    extended: "The genre has evolved from sensationalist reportage to sophisticated social criticism. Truman Capote's In Cold Blood pioneered the novelistic approach. More recently, works like Serial, Making a Murderer, and I'll Be Gone in the Dark use the investigation itself as narrative — the obsessive pursuit of truth becoming its own kind of story. The genre's ethical tension is permanent: how do you tell a story about real suffering without exploiting it? The best true crime acknowledges this tension rather than resolving it, treating victims as people rather than plot devices and systems as subjects rather than backdrops."
+  },
+  {
+    id: "ecchi-fan-service",
+    title: "Ecchi & Fan Service",
+    icon: "♢",
+    medium: ["anime"],
+    tags: ["playfulness", "taboo", "spectacle"],
+    definition: "Ecchi occupies the liminal space between suggestion and explicitness — the playful, self-aware deployment of sensuality as spectacle. It is a genre defined by what it almost shows, trading in innuendo, accidental exposure, and comedic embarrassment. Beneath its surface lies a commentary on desire itself: the way anticipation often exceeds fulfilment, and how laughter defuses what arousal complicates.",
+    extended: "Ecchi is among anime's most controversial genres, dismissed by detractors as juvenile titillation and defended by fans as a distinct form of comedy that uses sexual tension as its primary mechanism. Series like Kill la Kill subverted the genre by making fan service a deliberate thematic choice about shame and empowerment. Food Wars used ecchi tropes as metaphor for the sensory intensity of great cooking. The genre functions differently in Japanese cultural context, where attitudes toward nudity and sexuality in media diverge significantly from Western norms. Understanding ecchi requires engaging with these cultural specificities rather than applying external frameworks wholesale."
+  },
+];
+
+// ─── Helper functions ───
+function getGenresByMedium(medium) {
+  return GENRES.filter(g => g.medium.includes(medium));
+}
+
+function getGenreById(id) {
+  return GENRES.find(g => g.id === id);
+}
+
+function searchGenres(query, medium) {
+  const q = query.toLowerCase();
+  let results = medium ? getGenresByMedium(medium) : GENRES;
+  if (q) {
+    results = results.filter(g =>
+      g.title.toLowerCase().includes(q) ||
+      g.tags.some(t => t.includes(q)) ||
+      g.definition.toLowerCase().includes(q)
+    );
+  }
+  return results;
+}
+
+// ─── Shared rendering ───
+function createGenreCard(genre, delay = 0) {
+  const card = document.createElement('a');
+  card.href = `genre.html?id=${genre.id}`;
+  card.className = 'genre-card';
+  card.style.transitionDelay = `${delay * 0.03}s`;
+
+  const badges = genre.medium.map(m =>
+    `<span class="card-badge ${m}">${m === 'books' ? 'Books' : m === 'film' ? 'Film' : 'Anime'}</span>`
+  ).join('');
+
+  const tags = genre.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
+
+  card.innerHTML = `
+    <div class="card-row-top">
+      <div class="card-icon">${genre.icon}</div>
+      <div class="card-badges">${badges}</div>
+    </div>
+    <div class="card-title">${genre.title}</div>
+    <div class="card-def">${genre.definition}</div>
+    <div class="card-bottom">
+      <div class="card-tags">${tags}</div>
+      <span class="card-arrow">Explore</span>
+    </div>
+  `;
+
+  return card;
+}
+
+function renderGrid(container, genres) {
+  container.innerHTML = '';
+  if (genres.length === 0) {
+    container.innerHTML = '<div class="no-results">No genres found matching your search.</div>';
+    return;
+  }
+  genres.forEach((g, i) => {
+    const card = createGenreCard(g, i);
+    container.appendChild(card);
+  });
+  // trigger visibility
+  requestAnimationFrame(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.05 });
+    container.querySelectorAll('.genre-card').forEach(c => observer.observe(c));
+  });
+}
+
+// ═══ Navigation Component ═══
+function initNav(activePage) {
+  const nav = document.querySelector('.site-nav');
+  if (!nav) return;
+
+  // Highlight active link
+  nav.querySelectorAll('.nav-link').forEach(link => {
+    if (link.dataset.page === activePage) link.classList.add('active');
+  });
+
+  // Mobile toggle
+  const toggle = nav.querySelector('.nav-toggle');
+  const links = nav.querySelector('.nav-links');
+  if (toggle && links) {
+    toggle.addEventListener('click', () => {
+      links.classList.toggle('open');
+    });
+    // close on link click
+    links.querySelectorAll('.nav-link').forEach(l => {
+      l.addEventListener('click', () => links.classList.remove('open'));
+    });
+  }
+
+  // Shrink nav on scroll
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > 80) {
+      nav.style.padding = '0.8rem clamp(1.5rem, 5vw, 4rem)';
+    } else {
+      nav.style.padding = '1.2rem clamp(1.5rem, 5vw, 4rem)';
+    }
+    lastScroll = y;
+  });
+}
+
+</script>
+  <script>
+    initNav('');
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const genre = getGenreById(id);
+    const detail = document.getElementById('detail');
+
+    if (!genre) {
+      detail.innerHTML = `
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <h1>Genre not found</h1>
+        <p class="header-desc" style="opacity:1">The genre you're looking for doesn't exist. <a href="index.html" style="color:var(--gold)">Return home</a>.</p>
+      `;
+    } else {
+      document.title = `${genre.title} — The Genre Library`;
+
+      const badges = genre.medium.map(m =>
+        `<span class="card-badge ${m}">${m === 'books' ? 'Books' : m === 'film' ? 'Film' : 'Anime'}</span>`
+      ).join('');
+
+      const tags = genre.tags.map(t => `<span class="related-tag">${t}</span>`).join('');
+
+      // Find related genres (share ≥1 tag)
+      const related = GENRES.filter(g =>
+        g.id !== genre.id && g.tags.some(t => genre.tags.includes(t))
+      ).slice(0, 4);
+
+      const relatedCards = related.map(g => `
+        <a href="genre.html?id=${g.id}" style="text-decoration:none;color:inherit;display:block;padding:1.2rem 1rem;border:1px solid var(--border);background:var(--bg-card);transition:all 0.3s;margin-bottom:0.6rem;"
+           onmouseover="this.style.borderColor='var(--border-light)';this.style.background='var(--bg-card-hover)'"
+           onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--bg-card)'">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <span style="margin-right:0.6rem">${g.icon}</span>
+              <span style="font-family:var(--display);font-size:1.1rem">${g.title}</span>
+            </div>
+            <span style="color:var(--gold-dim);font-size:0.8rem">→</span>
+          </div>
+        </a>
+      `).join('');
+
+      // Build review sections per medium
+      const reviewSections = genre.medium.map(m => {
+        const label = m === 'books' ? 'Books' : m === 'film' ? 'Films' : 'Anime';
+        return `
+          <div class="detail-section">
+            <h2>My ${label} — ${genre.title}</h2>
+            <div class="review-placeholder">
+              Your ${label.toLowerCase()} reviews and recommendations for ${genre.title} will appear here.<br>
+              <span style="font-size:0.85rem;color:var(--text-muted);margin-top:0.5rem;display:inline-block">Add your entries to the data in <code style="color:var(--gold-dim);font-size:0.8rem">js/genres.js</code></span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      detail.innerHTML = `
+        <a href="javascript:history.back()" class="back-link">← Back</a>
+        <span class="detail-icon">${genre.icon}</span>
+        <h1>${genre.title}</h1>
+        <div class="detail-badges">${badges}</div>
+        <p class="detail-def">${genre.definition}</p>
+        ${genre.extended ? `<p class="detail-def" style="color:var(--text-dim);font-size:clamp(0.92rem,1.8vw,1.05rem)">${genre.extended}</p>` : ''}
+
+        <div class="detail-section">
+          <h2>Defining Qualities</h2>
+          <div class="related-tags">${tags}</div>
+        </div>
+
+        ${reviewSections}
+
+        ${related.length ? `
+        <div class="detail-section">
+          <h2>Related Genres</h2>
+          ${relatedCards}
+        </div>
+        ` : ''}
+      `;
+
+      // Animate in
+      detail.style.opacity = '0';
+      detail.style.transform = 'translateY(12px)';
+      requestAnimationFrame(() => {
+        detail.style.transition = 'opacity 0.6s, transform 0.6s var(--ease-out-expo)';
+        detail.style.opacity = '1';
+        detail.style.transform = 'translateY(0)';
+      });
+    }
+  </script>
+</body>
+</html>
